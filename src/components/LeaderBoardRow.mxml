@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="540" height="46" >
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			[Bindable]
+			public var conto:String="1"
+			
+
+			
+		]]>
+	</fx:Script>
+	<s:HGroup >
+		<s:Label text="{conto}" color="#ffffff" />
+		<s:Spacer width="18" />
+		<s:RichText id="player" backgroundColor="#ffffff" color="#000000" width="505" text="john doe" />
+		<s:Spacer width="36" />
+		<s:Label  text="SCORE" color="#ffffff"  />
+		<s:Spacer width="18" />
+		<s:RichText id="score" backgroundColor="#ffffff" color="#000000" width="91" height="46" text="360" />
+	</s:HGroup>
+	
+</s:Group>

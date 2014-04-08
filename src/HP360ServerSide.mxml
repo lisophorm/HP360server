@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" creationComplete="windowedapplication1_creationCompleteHandler(event)">
+	
+	<fx:Style source="assets/css/Fonts.css" />
+	<fx:Style source="assets/css/Main.css" />
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import events.MyEvent;
+			
+			import org.osmf.utils.OSMFSettings;
+			
+			import views.BillBoard;
+			
+			private var billBoard:BillBoard;
+			
+			protected function windowedapplication1_creationCompleteHandler(event:FlexEvent):void
+			{
+				OSMFSettings.enableStageVideo=false;
+				
+				OSMFSettings.enableStageVideo=false;
+				trace("Main screen:"+ Screen.mainScreen.visibleBounds.left+" "+Screen.mainScreen.visibleBounds.top);
+				trace("screens"+Screen.screens.length);
+				var secondscreen:Number=0;
+				if(Screen.screens.length<2) {
+					trace("no second screen"+Screen.screens.length);
+					NativeApplication.nativeApplication.exit();
+				}
+				for(var i:Number=0;i<Screen.screens.length;i++) {
+					trace(i+" screen:"+Screen.screens[i].visibleBounds.left+" "+Screen.screens[i].visibleBounds.top);
+					if(Screen.screens[i].visibleBounds.left != Screen.mainScreen.visibleBounds.left) {
+						secondscreen=i;
+					}
+				}
+				trace("secondary screen is:"+secondscreen);
+				billBoard=new BillBoard();
+				billBoard.open();
+				billBoard.move(Screen.screens[secondscreen].visibleBounds.left,Screen.screens[secondscreen].visibleBounds.top);
+				billBoard.width=Screen.screens[secondscreen].visibleBounds.width;
+				billBoard.height=Screen.screens[secondscreen].visibleBounds.height;
+				billBoard.addEventListener(MyEvent.STATUS_CHANGE,displayError);
+			}
+			private function displayError(e:MyEvent) {
+				trace(":::::::::::::  EVENT DISPATCHED");
+				console.text=e.message;
+			}
+		]]>
+	</fx:Script>
+	
+	<s:TextArea width="400" height="200" id="console" />
+</s:WindowedApplication>

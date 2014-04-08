@@ -1,0 +1,20 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+@namespace components "views.components/*";
+
+@namespace components1 "views.components.*";
+global
+{
+	/*
+	text-align: center;
+	content-background-color: #FFFFFF;
+	*/
+	fontFamily: "HPSimplified_Rg";
+}
+s|Label  {
+	fontSize: 20;
+	fontFamily: "HPSimplified_Rg";	
+	color: #000000;
+	
+}

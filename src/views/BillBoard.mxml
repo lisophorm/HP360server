@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx" 
+		  showStatusBar="false" systemChrome="none"
+		  alwaysInFront="true" width="400" height="300" creationComplete="window1_creationCompleteHandler(event)" xmlns:components="components.*">
+	<fx:Metadata>
+		[Event(name="statusChange", type="events.MyEvent")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			
+			import com.adobe.serialization.json.JSON;
+			import com.alfo.utils.JukeBox;
+			import com.greensock.TweenMax;
+			
+			import mx.events.FlexEvent;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import events.MyEvent;
+			
+			import org.osmf.events.TimeEvent;
+			
+			private var jukeBox:JukeBox
+			
+			private var pollTimer:Timer=new Timer(10000);
+			
+			private var rollingTimer:Timer=new Timer(5000);
+			
+			private var rollingState:Number=0;
+			
+			private var lastStatus:String="roll";
+			
+			
+			protected function window1_creationCompleteHandler(event:FlexEvent):void
+			{
+				jukeBox=new JukeBox();
+				jukeBox.init("assets/jukeboxmusic");
+				rollingTimer.addEventListener(TimerEvent.TIMER,rollTimerEvent)
+				pollTimer.addEventListener(TimerEvent.TIMER,pollTimerServer);
+				pollTimer.start();
+				rollingTimer.start();
+				getLeaderBoard.send();
+			}
+			
+			private function rollTimerEvent(e:TimerEvent) {
+				TweenMax.to(promoVideo,1,{alpha:1});
+				promoVideo.play();
+				rollingTimer.stop();
+				
+			}
+			
+			private function pollTimerServer(e:TimerEvent) {
+				pollServer.send();
+			}
+			
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				promoVideo.play();
+				jukeBox.pause();
+			}
+			
+			protected function button2_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				jukeBox.unPause();
+			}
+			
+			protected function pollServer_resultHandler(event:ResultEvent):void
+			{
+				//var result:Object=com.adobe.serialization.json.JSON.decode('{"message":"roll","parameters":"test test"}');
+				
+				var result:Object=com.adobe.serialization.json.JSON.decode("["+unescape(event.result as String)+"]");
+				trace("json:::"+result);
+				if(String(result[0].message)!=lastStatus) {
+					lastStatus=String(result[0].message);
+					switch (lastStatus) {
+						case "roll":
+							trace("roll");
+							promoVideo.play();
+							jukeBox.unPause();
+							
+							break;
+						case "dance":
+							trace("dance");
+							break;
+					}
+				}
+				
+				
+				//var message:*=result.getValue();
+				var err:MyEvent=new MyEvent(MyEvent.STATUS_CHANGE,"OK");
+				dispatchEvent(err);
+			}
+			
+			protected function pollServer_faultHandler(event:FaultEvent):void
+			{
+				trace("poll error:"+event.fault.message);
+				var err:MyEvent=new MyEvent(MyEvent.STATUS_CHANGE,event.fault.message);
+				dispatchEvent(err);
+			}
+			
+			protected function promoVideo_completeHandler(event:TimeEvent):void
+			{
+				trace("complete::: promovideo");
+				TweenMax.to(promoVideo,1,{alpha:0});
+				rollingTimer.start();
+			}
+			
+			protected function getLeaderBoard_resultHandler(event:ResultEvent):void
+			{
+				var result:Object=com.adobe.serialization.json.JSON.decode(unescape(event.result as String));
+				trace(result);
+				leaderboard.row0.score.text=result[0].score as String;
+				leaderboard.row0.player.text=(result[0].firstname as String)+" "+(result[1].lastname as String);
+				
+				leaderboard.row1.score.text=result[1].score as String;
+				leaderboard.row1.player.text=(result[1].firstname as String)+" "+(result[1].lastname as String);
+				
+				leaderboard.row2.score.text=result[2].score as String;
+				leaderboard.row2.player.text=(result[2].firstname as String)+" "+(result[2].lastname as String);
+				
+				leaderboard.row3.score.text=result[3].score as String;
+				leaderboard.row3.player.text=(result[3].firstname as String)+" "+(result[3].lastname as String);
+				
+				leaderboard.row4.score.text=result[4].score as String;
+				leaderboard.row4.player.text=(result[4].firstname as String)+" "+(result[4].lastname as String);
+				
+				leaderboard.row5.score.text=result[5].score as String;
+				leaderboard.row5.player.text=(result[5].firstname as String)+" "+(result[5].lastname as String);
+				
+				leaderboard.row5.score.text=result[5].score as String;
+				leaderboard.row5.player.text=(result[5].firstname as String)+" "+(result[5].lastname as String);
+				
+				leaderboard.row6.score.text=result[6].score as String;
+				leaderboard.row6.player.text=(result[6].firstname as String)+" "+(result[6].lastname as String);
+				
+				leaderboard.row7.score.text=result[7].score as String;
+				leaderboard.row7.player.text=(result[7].firstname as String)+" "+(result[7].lastname as String);
+				
+				leaderboard.row8.score.text=result[8].score as String;
+				leaderboard.row8.player.text=(result[8].firstname as String)+" "+(result[8].lastname as String);
+				
+				leaderboard.row9.score.text=result[9].score as String;
+				leaderboard.row9.player.text=(result[9].firstname as String)+" "+(result[9].lastname as String);
+				//}
+			}
+			
+			protected function getLeaderBoard_faultHandler(event:FaultEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<s:HTTPService id="pollServer" concurrency="last" resultFormat="text" requestTimeout="1"  url="http://192.168.1.16/serverpoll.php" result="pollServer_resultHandler(event)" fault="pollServer_faultHandler(event)" />
+		<s:HTTPService id="getLeaderBoard" concurrency="last" resultFormat="text" requestTimeout="10"  url="http://192.168.1.16/leaderboard.php" result="getLeaderBoard_resultHandler(event)" fault="getLeaderBoard_faultHandler(event)" />
+		
+	</fx:Declarations>
+	<s:BorderContainer id="leaderBoardView" width="100%" height="100%" borderVisible="false" >
+		<s:HGroup>
+			<s:Group>
+				<s:Rect height="1080" width="640">
+					<s:fill>
+						<s:SolidColor color="#0095D5" />
+					</s:fill>
+					
+				</s:Rect>
+				<s:VGroup>
+					<components:LeaderBoard id="leaderboard" />
+				</s:VGroup>
+			</s:Group>
+			<s:BitmapImage source="assets/images/instructions.png" />
+			
+		</s:HGroup>
+		
+	</s:BorderContainer>
+	<s:VideoDisplay alpha="0" id="promoVideo" width="100%" height="100%" source="assets/promovideo/promovideo.mp4" autoPlay="true"  complete="promoVideo_completeHandler(event)" />
+	<s:VGroup>
+		<s:Button label="pause" click="button1_clickHandler(event)" />
+		<s:Button label="unpause" click="button2_clickHandler(event)" />
+	</s:VGroup>
+</s:Window>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300" xmlns:components="components.*">
+	<s:VGroup>
+		<components:LeaderBoardRow conto="1" id="row0" />
+		<components:LeaderBoardRow conto="2" id="row1"  />
+		<components:LeaderBoardRow conto="3" id="row2"  />
+		<components:LeaderBoardRow conto="4" id="row3"  />
+		<components:LeaderBoardRow conto="5" id="row4"  />
+		<components:LeaderBoardRow conto="6" id="row5"  />
+		<components:LeaderBoardRow conto="7" id="row6"  />
+		<components:LeaderBoardRow conto="8" id="row7"  />
+		<components:LeaderBoardRow conto="9" id="row8"  />
+		<components:LeaderBoardRow conto="10" id="row9"  />
+	</s:VGroup>
+</s:Group>
